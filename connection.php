@@ -26,7 +26,7 @@ if ($insert){
     echo "<script>alert('Not Registered');</script>";
 }
     }
-    public static funtion login($name,$password){
+    public static function login($name,$password){
         $login=israel::connection()->prepare("SELECT level FROM user WHERE username=:u and password=:p");
         $login->blindValue(':u', $username);
         $login->blindValue(':p',$password);
