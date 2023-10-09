@@ -28,8 +28,8 @@ if ($insert){
     }
     public static function login($name,$password){
         $login=israel::connection()->prepare("SELECT level FROM user WHERE username=:u and password=:p");
-        $login->blindValue(':u', $username);
-        $login->blindValue(':p',$password);
+        $login->bindValue(':u', $username);
+        $login->bindValue(':p',$password);
         $login->execute();
         if ($login->rowCount()>0){
             $fetch=$login->fetch(PDO::FETCH_ASSOC);
