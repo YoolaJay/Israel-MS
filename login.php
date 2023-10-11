@@ -4,7 +4,7 @@ if (isset($_POST['loginButton'])){
     $username=$_POST['username'];
     $password=$_POST['password'];
     if (!empty($_POST['username'])&&!empty($_POST['password'])){
-        $login=israel::login($name,$password);
+        $login=israel::login($username,$password);
     }else {
         echo "Please, all Flieds are required";
     }
