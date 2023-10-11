@@ -3,8 +3,8 @@ class israel{
     public static function connection()
     {
         try {
-            $con=new PDO("mysql:host=locahost:3308; dbname=israel",'root','');
-            return $con;
+            $conn=new PDO("mysql:host=locahost:3308; dbname=israel",'root','');
+            return $conn;
         } catch (PDOException $error1){
             echo $error1->getMessage();
         }catch(Exception $error2){
@@ -27,7 +27,7 @@ if ($insert){
 }
     }
     public static function login($name,$password){
-        $login=israel::connection()->prepare("SELECT level FROM user WHERE username=:u and password=:p");
+        $login=israel::connection()->prepare("SELECT level FROM users WHERE username=:u and password=:p");
         $login->bindValue(':u', $username);
         $login->bindValue(':p',$password);
         $login->execute();
