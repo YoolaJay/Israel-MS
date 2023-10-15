@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,700&family=Montserrat:wght@300;400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@media (max-width: 768px) {
+    /* Define styles for screens with a maximum width of 768px */
+  }
+  
+
+
+
+html,
+body,
+
+#root,
+.app{
+    height: 100%;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.active{
+    color: rgb(6, 6, 161);
+    background-color: white;
+    border-radius: 4px;
+}
+
+table td{
+    border-bottom: 1px solid gray
+}
