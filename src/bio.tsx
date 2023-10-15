@@ -54,6 +54,20 @@ const Bio: React.FC = () => {
   const closePopUp = () => {
     setIsOpen(false);
   };
+
+  const [formData, setFormData] = useState({
+    namePrefix: 'Mr',
+    name: '',
+    phone: '',
+    gender: '',
+    email: '',
+    dateOfBirth: '',
+  });
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
     
 
     return (
@@ -187,10 +201,129 @@ const Bio: React.FC = () => {
 
         {isOpen && (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 w-64 shadow-md rounded-md">
-            <h2 className="text-2xl font-bold mb-4">Pop-up Form</h2>
-            <form>
+          <div className="bg-white p-4 w-82 shadow-md rounded-md">
+            <h2 className="text-2xl font-bold mb-4">New Member</h2>
+            <form className=' items-center justify-center'>
               {/* Your form fields go here */}
+              <div className='mb-4 flex'>
+                <div className="w-1/4 pr-2">
+                  <label htmlFor="namePrefix" className="block text-gray-700">Name</label>
+                  <select
+                    id="namePrefix"
+                    name="namePrefix"
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    onChange={handleInputChange}
+                    value={formData.namePrefix}
+                  >
+                    <option value="Mr">Mr</option>
+                    <option value="Mrs">Mrs</option>
+                    <option value="Dr">Dr</option>
+                  </select>
+                </div>
+                <div className="w-3/4 pl-2">
+                  <label htmlFor="name" className="block text-gray-700">.</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    onChange={handleInputChange}
+                    value={formData.name}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <div className="flex mb-2">
+                  <div className="w-1/2 pr-2">
+                    <input
+                      type="text"
+                      id="phone"
+                      name="phone"
+                      className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                      placeholder='phone'
+                      onChange={handleInputChange}
+                      value={formData.phone}
+                      required
+                    />
+                  </div>
+                  <div className="w-1/2 pl-2">
+                    <input
+                      type="text"
+                      id="gender"
+                      name="gender"
+                      placeholder='Gender'
+                      className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                      onChange={handleInputChange}
+                      value={formData.gender}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="mb-4">
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  placeholder='Email'
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                  onChange={handleInputChange}
+                  value={formData.email}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="dateOfBirth" className="block text-gray-700">Date of Birth</label>
+                <input
+                  type="text"
+                  id="dateOfBirth"
+                  name="dateOfBirth"
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                  onChange={handleInputChange}
+                  value={formData.dateOfBirth}
+                />
+              </div>
+
+              <label>
+                  Department
+                </label>
+              <div className='mb-4 flex'>
+                
+                <div className="w-3/4 pr-2">
+                  <input
+                    type="text"
+                    id="department"
+                    name="department"
+                    placeholder='Department'
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    onChange={handleInputChange}
+                    value={formData.name}
+                    required
+                  />
+                </div>
+                <div className="w-1/4 pl-2">
+                  <select
+                    id="role"
+                    name="role"
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    onChange={handleInputChange}
+                    value={formData.namePrefix}
+                  >
+                    <option value="Member">Member</option>
+                    <option value="Pastor">Pastor</option>
+                    <option value="Deacon/Deaconess">Deacon</option>
+                    <option value="AP">Assistant Pastor</option>
+                  </select>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200"
+              >
+                SAVE NEW MEMBER
+              </button>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md"
                 onClick={closePopUp}

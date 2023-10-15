@@ -8,7 +8,6 @@ import Report from "./report";
 import Sreport from "./sReport";
 import Scheduler from "./events";
 import LoginForm from "./login";
-import SignUp from "./signup";
 
 
 function App() {
@@ -45,7 +44,6 @@ function App() {
                     <Route path="/general" element={loggedIn ? <Report/> : <Navigate to="/login" />}/>
                     <Route path="/service" element={loggedIn ? <Sreport/> : <Navigate to="/login"/>}/>
                     <Route path="/events" element={loggedIn ? <Scheduler/> : <Navigate to="/login"/>}/>
-                    <Route path="/signup" element={loggedIn ? <SignUp/> : <Navigate to="/login"/>}/>
                     </Routes>
                   </div>
                 </div>

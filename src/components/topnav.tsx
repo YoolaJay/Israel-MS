@@ -53,15 +53,19 @@ const TopNav: React.FC = () => {
                     Close
                   </button> */}
                   <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center text-xs border-b-2 font-bold'>
+                  <Icon icon="mdi:file-report-outline"/>
                     Report Ready
                   </button>
                   <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center text-xs border-b-2 font-bold'>
+                    <Icon icon="bx:mail-send" />
                     New Message
                   </button>
                   <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center text-xs border-b-2 font-bold'>
+                  <Icon icon="ic:round-library-add" className='pr-1 text-lg' />
                     New Entries
                   </button>
                   <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center text-xs border-b-2 font-bold'>
+                  <Icon icon="mdi:calendar-outline" className='pr-1 text-lg' />
                     New Events
                   </button>
                 </form>
