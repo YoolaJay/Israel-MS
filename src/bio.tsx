@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 import React from 'react';
 import {useState, useRef, useEffect} from 'react';
-import Chart from 'chart.js/auto'
+import { Bar } from 'react-chartjs-2';
 
 
 const Bio: React.FC = () => {
@@ -16,35 +16,30 @@ const Bio: React.FC = () => {
 
   const chartRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const data = {
-      labels: ['Males', 'Females'],
-      datasets: [
-        {
-          data: [40, 60], //sample data
-          backgroundColor: ['green', 'blue', 'red', 'yellow']
-        },
-      ],
-    };
-
-    const chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-
-    const ctx = chartRef.current?.getContext('2d'); //context of the chart
-
-    if (ctx) {
-      new Chart(ctx, {
-        type: 'doughnut',
-        data: data,
-        options: chartOptions
-      });
-    }
-  }, 
-  []
-  );
-
+  const data = {
+    labels: ['Male', 'Female'],
+    datasets: [
+      {
+        label: 'Male',
+        backgroundColor: 'blue',
+        data: [50, 70], // Replace with your actual data
+      },
+      {
+        label: 'Female',
+        backgroundColor: 'pink',
+        data: [60, 80], // Replace with your actual data
+      },
+    ],
+  };
+  const options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+  
+    
   const [isOpen, setIsOpen] = useState(false);
 
   const openPopUp = () => {
@@ -174,6 +169,7 @@ const Bio: React.FC = () => {
           {/* Information Block 2 */}
           <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex items-center justify-between w-1/3 ml-4">
             {/* Add your content for Block 2 here */}
+            <Bar data={data} options={options} />
           </div>
 
           {/* Information Block 3 */}
