@@ -3,6 +3,54 @@ import React from 'react';
 import {useState, useRef, useEffect} from 'react';
 import {Bar} from 'react-chartjs-2';
 
+
+
+const dataMaleFemale = {
+  labels: ['Male', 'Female'],
+  datasets: [
+    {
+      label: 'Number of People',
+      data: [50, 70], // Replace with your data
+      backgroundColor: ['blue', 'pink'], // Bar colors
+    },
+  ],
+};
+
+const dataChildrenAdults = {
+  labels: ['Children', 'Adults'],
+  datasets: [
+    {
+      label: 'Number of People',
+      data: [30, 90], // Replace with your data
+      backgroundColor: ['green', 'purple'], // Bar colors
+    },
+  ],
+};
+
+// const options = {
+//   indexAxis: 'y', // Set to 'y' for horizontal bar chart
+//   scales: {
+//     x: {
+//       beginAtZero: true,
+//     },
+//   },
+// };
+interface ChartOptions {
+      scales: {
+        x: {
+          beginAtZero: boolean;
+        };
+      };
+    }
+    
+    const options: ChartOptions = {
+      scales: {
+        x: {
+          beginAtZero: true,
+        },
+      },
+    };
+
 const Bio: React.FC = () => {
   const iconSize = "200px";
   const [isDatabaseActive, setIsDatabaseActive] = useState(false);
@@ -13,45 +61,44 @@ const Bio: React.FC = () => {
     ? 'text-green-600'
     : 'text-black';
 
-    const dataGender = {
-      labels: ['Male', 'Female'],
-      datasets: [
-        {
-          label: 'Gender',
-          data: [50, 70], // Replace with your actual data
-          backgroundColor: ['green', 'blue'], // Bar colors
-        },
-      ],
-    };
+    // const dataGender = {
+    //   labels: ['Male', 'Female'],
+    //   datasets: [
+    //     {
+    //       label: 'Gender',
+    //       data: [50, 70], // Replace with your actual data
+    //       backgroundColor: ['green', 'blue'], // Bar colors
+    //     },
+    //   ],
+    // };
 
-    const dataAge = {
-      labels: ['Adult', 'Children'],
-      datasets: [
-        {
-          label: 'Age',
-          data: [70, 30], // Replace with your actual data
-          backgroundColor: ['red', 'yellow'], // Bar colors
-        },
-      ],
-    };
-
-    interface ChartOptions {
-      scales: {
-        x: {
-          beginAtZero: boolean;
-        };
-      };
-    }
-    
+    // const dataAge = {
+    //   labels: ['Adult', 'Children'],
+    //   datasets: [
+    //     {
+    //       label: 'Age',
+    //       data: [70, 30], // Replace with your actual data
+    //       backgroundColor: ['red', 'yellow'], // Bar colors
+    //     },
+    //   ],
+    // };
   
-    // Options
-    const options: ChartOptions = {
-      scales: {
-        x: {
-          beginAtZero: true,
-        },
-      },
-    };
+    // interface ChartOptions {
+    //   scales: {
+    //     x: {
+    //       beginAtZero: boolean;
+    //     };
+    //   };
+    // }
+    
+    // const options: ChartOptions = {
+    //   scales: {
+    //     x: {
+    //       beginAtZero: true,
+    //     },
+    //   },
+    // };
+    
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -180,14 +227,21 @@ const Bio: React.FC = () => {
           </div>
 
           {/* Information Block 2 */}
-          <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex flex-col items-center justify-between w-1/3 ml-4">
+          <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex items-center justify-between w-1/3 ml-4">
             {/* Add your content for Block 2 here */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <Bar data={dataGender} options={options} />
             </div>
             <div className="mb-4">
               <Bar data={dataAge} options={options} />
+            </div> */}
+
+            {/* <div className="w-1/2">
+              <Bar data={dataMaleFemale} options={options} />
             </div>
+            <div className="w-1/2">
+              <Bar data={dataChildrenAdults} options={options} />
+            </div> */}
           </div>
 
           {/* Information Block 3 */}
