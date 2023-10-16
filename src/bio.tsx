@@ -4,6 +4,32 @@ import {useState, useRef, useEffect} from 'react';
 import { Bar } from 'react-chartjs-2';
 
 
+
+
+const data = {
+  labels: ['Male', 'Female'],
+  datasets: [
+    {
+      label: 'Male',
+      backgroundColor: 'blue',
+      data: [50, 70], // Replace with your actual data
+    },
+    {
+      label: 'Female',
+      backgroundColor: 'pink',
+      data: [60, 80], // Replace with your actual data
+    },
+  ],
+};
+const options = {
+  scales: {
+    y: {
+      beginAtZero: true,
+    },
+  },
+};
+
+
 const Bio: React.FC = () => {
   const iconSize = "200px";
   const [isDatabaseActive, setIsDatabaseActive] = useState(false);
@@ -13,32 +39,6 @@ const Bio: React.FC = () => {
   const checkboxStyle = isDatabaseActive
     ? 'text-green-600'
     : 'text-black';
-
-  const chartRef = useRef<HTMLCanvasElement>(null);
-
-  const data = {
-    labels: ['Male', 'Female'],
-    datasets: [
-      {
-        label: 'Male',
-        backgroundColor: 'blue',
-        data: [50, 70], // Replace with your actual data
-      },
-      {
-        label: 'Female',
-        backgroundColor: 'pink',
-        data: [60, 80], // Replace with your actual data
-      },
-    ],
-  };
-  const options = {
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
-  
     
   const [isOpen, setIsOpen] = useState(false);
 
