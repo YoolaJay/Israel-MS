@@ -37,7 +37,7 @@ function App() {
                 </div>
 
                 {/* Bio */}
-                <div className="flex justify-center items-center ">
+                <div className="flex justify-center items-center">
                   <div className="w-11/12">
                     <Routes>
                     <Route path="/dashboard" element={ loggedIn ? <Bio /> : <Navigate to="/login" />}/>

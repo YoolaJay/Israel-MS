@@ -1,34 +1,7 @@
 import { Icon } from '@iconify/react';
 import React from 'react';
 import {useState, useRef, useEffect} from 'react';
-import { Bar } from 'react-chartjs-2';
-
-
-
-
-const data = {
-  labels: ['Male', 'Female'],
-  datasets: [
-    {
-      label: 'Male',
-      backgroundColor: 'blue',
-      data: [50, 70], // Replace with your actual data
-    },
-    {
-      label: 'Female',
-      backgroundColor: 'pink',
-      data: [60, 80], // Replace with your actual data
-    },
-  ],
-};
-const options = {
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
-};
-
+import {Bar} from 'react-chartjs-2';
 
 const Bio: React.FC = () => {
   const iconSize = "200px";
@@ -39,7 +12,47 @@ const Bio: React.FC = () => {
   const checkboxStyle = isDatabaseActive
     ? 'text-green-600'
     : 'text-black';
+
+    const dataGender = {
+      labels: ['Male', 'Female'],
+      datasets: [
+        {
+          label: 'Gender',
+          data: [50, 70], // Replace with your actual data
+          backgroundColor: ['green', 'blue'], // Bar colors
+        },
+      ],
+    };
+
+    const dataAge = {
+      labels: ['Adult', 'Children'],
+      datasets: [
+        {
+          label: 'Age',
+          data: [70, 30], // Replace with your actual data
+          backgroundColor: ['red', 'yellow'], // Bar colors
+        },
+      ],
+    };
+
+    interface ChartOptions {
+      scales: {
+        x: {
+          beginAtZero: boolean;
+        };
+      };
+    }
     
+  
+    // Options
+    const options: ChartOptions = {
+      scales: {
+        x: {
+          beginAtZero: true,
+        },
+      },
+    };
+
   const [isOpen, setIsOpen] = useState(false);
 
   const openPopUp = () => {
@@ -167,9 +180,14 @@ const Bio: React.FC = () => {
           </div>
 
           {/* Information Block 2 */}
-          <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex items-center justify-between w-1/3 ml-4">
+          <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex flex-col items-center justify-between w-1/3 ml-4">
             {/* Add your content for Block 2 here */}
-            <Bar data={data} options={options} />
+            <div className="mb-4">
+              <Bar data={dataGender} options={options} />
+            </div>
+            <div className="mb-4">
+              <Bar data={dataAge} options={options} />
+            </div>
           </div>
 
           {/* Information Block 3 */}
