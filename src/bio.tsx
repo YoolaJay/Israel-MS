@@ -60,44 +60,6 @@ const Bio: React.FC = () => {
   const checkboxStyle = isDatabaseActive
     ? 'text-green-600'
     : 'text-black';
-
-    // const dataGender = {
-    //   labels: ['Male', 'Female'],
-    //   datasets: [
-    //     {
-    //       label: 'Gender',
-    //       data: [50, 70], // Replace with your actual data
-    //       backgroundColor: ['green', 'blue'], // Bar colors
-    //     },
-    //   ],
-    // };
-
-    // const dataAge = {
-    //   labels: ['Adult', 'Children'],
-    //   datasets: [
-    //     {
-    //       label: 'Age',
-    //       data: [70, 30], // Replace with your actual data
-    //       backgroundColor: ['red', 'yellow'], // Bar colors
-    //     },
-    //   ],
-    // };
-  
-    // interface ChartOptions {
-    //   scales: {
-    //     x: {
-    //       beginAtZero: boolean;
-    //     };
-    //   };
-    // }
-    
-    // const options: ChartOptions = {
-    //   scales: {
-    //     x: {
-    //       beginAtZero: true,
-    //     },
-    //   },
-    // };
     
 
   const [isOpen, setIsOpen] = useState(false);
@@ -117,6 +79,7 @@ const Bio: React.FC = () => {
     gender: '',
     email: '',
     dateOfBirth: '',
+    role: 'Member'
   });
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -270,8 +233,14 @@ const Bio: React.FC = () => {
         {isOpen && (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-black bg-opacity-50">
           <div className="bg-white p-4 w-82 shadow-md rounded-md">
-            <h2 className="text-2xl font-bold mb-4">New Member</h2>
-            <form className=' items-center justify-center'>
+          <button
+                className="bg-blue-50 px-4 py-2 rounded-md"
+                onClick={closePopUp}
+              >
+                <Icon icon="ep:back" />
+              </button>
+            
+            <form className=' items-center justify-center mt-6'>
               {/* Your form fields go here */}
               <div className='mb-4 flex'>
                 <div className="w-1/4 pr-2">
@@ -359,7 +328,7 @@ const Bio: React.FC = () => {
                 </label>
               <div className='mb-4 flex'>
                 
-                <div className="w-3/4 pr-2">
+                <div className="w-2/3 pr-2">
                   <input
                     type="text"
                     id="department"
@@ -371,13 +340,13 @@ const Bio: React.FC = () => {
                     required
                   />
                 </div>
-                <div className="w-1/4 pl-2">
+                <div className="w-1/3 pl-2">
                   <select
                     id="role"
                     name="role"
                     className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
                     onChange={handleInputChange}
-                    value={formData.namePrefix}
+                    value={formData.role}
                   >
                     <option value="Member">Member</option>
                     <option value="Pastor">Pastor</option>
@@ -386,17 +355,60 @@ const Bio: React.FC = () => {
                   </select>
                 </div>
               </div>
+
+              <div className="mb-4 flex">
+                <div className="w-1/3 pr-2">
+                  <label htmlFor="biometrics" className="block text-gray-700">
+                    Scan Biometrics
+                  </label>
+                  <div className='input-icon'>
+                    <input
+                    type="text"
+                    id="biometrics"
+                    name="biometrics"
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    placeholder="Biometrics"
+                    onChange={handleInputChange}
+                    // value={formData.biometrics}
+                    required
+                    />
+                    {/* <Icon icon="ic:round-fingerprint" style={{ position: 'absolute', left: '5px', top: '50%', transform: 'translateY(-50%)', fontSize: '24px' }} /> */}
+                  </div>
+                  
+                    
+                </div>
+                <div className="w-2/3 pl-2">
+                  <label htmlFor="notes" className="block text-gray-700">
+                    Notes
+                  </label>
+                  <textarea
+                    id="notes"
+                    name="notes"
+                    placeholder="Notes"
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    // onChange={handleInputChange}
+                    // value={formData.notes}
+                  ></textarea>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="terms" className="block text-gray-700">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    className="mr-2"
+                    onChange={handleCheckboxChange}
+                    // checked={formData.terms}
+                  />
+                  Visitor
+                </label>
+              </div>
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200"
+                className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200 mt-8"
               >
                 SAVE NEW MEMBER
-              </button>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                onClick={closePopUp}
-              >
-                Close
               </button>
             </form>
           </div>
