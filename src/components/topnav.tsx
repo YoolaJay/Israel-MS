@@ -2,12 +2,16 @@ import { Icon } from '@iconify/react';
 import React, { useState } from 'react';
 
 const TopNav: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
   };
 
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen)
+  }
 
   // const closePopUp = () => {
   //   setIsOpen(false);
@@ -31,17 +35,45 @@ const TopNav: React.FC = () => {
           <button className="border border-blue-800 bg-green-600 text-white px-4 py-2 rounded-full h-16 w-16 flex items-center justify-center">
             <Icon icon="game-icons:power-button" style={{fontSize:'24px'}} />
           </button>
-          <button className="border border-blue-800 bg-white text-blue-700 px-4 py-2 rounded-full h-16 w-16 flex items-center justify-center">
+
+          <div className='relative inline-block'>
+          <button className="border border-blue-800 bg-white text-blue-700 px-4 py-2 rounded-full h-16 w-16 flex items-center justify-center"
+          onClick={toggleProfile}>
             <Icon icon="bx:user" style={{fontSize:'24px'}}/>
           </button>
+          {isProfileOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+              {/* <div className="bg-white p-4 w-64 shadow-md rounded-md"> */}
+                {/* <h2 className="text-2xl font-bold mb-4">Pop-up Form</h2> */}
+                <form className='p-4'>
+                  <div className='w-full text-blue-800 bg-white px-7 py-5 flex flex-col items-center justify-center text-xs border-b-2 font-bold'>
+                    <Icon icon="mingcute:user-4-fill" style={{fontSize:'32px'}} />
+                    <label>
+                      Hello, Admin
+                    </label>
+                  </div>
+                  <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center text-xs border-b-2 font-bold'>
+                  <Icon icon="bx:key" />
+                    Change Password
+                  </button>
+                  <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center text-xs border-b-2 font-bold'>
+                  <Icon icon="solar:logout-2-line-duotone" className='mr-2' />
+                     Log Out
+                  </button>
+                </form>
+              </div>
+            // </div>
+          )}
+          </div>
+          
           
           <div className='relative inline-block'>
           <button className="border border-blue-800 bg-white text-blue-700 px-4 py-2 rounded-full h-16 w-16 flex items-center justify-center"
-          onClick={toggleDropdown}>
+          onClick={toggleNotification}>
             <Icon icon="majesticons:bell-line" style={{fontSize:'24px'}}/>
           </button>
         
-          {isOpen && (
+          {isNotificationOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
               {/* <div className="bg-white p-4 w-64 shadow-md rounded-md"> */}
                 {/* <h2 className="text-2xl font-bold mb-4">Pop-up Form</h2> */}

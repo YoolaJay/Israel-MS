@@ -1,8 +1,55 @@
 import { Icon } from '@iconify/react';
 import React from 'react';
 import {useState, useRef, useEffect} from 'react';
-import Chart from 'chart.js/auto'
+import {Bar} from 'react-chartjs-2';
 
+
+
+const dataMaleFemale = {
+  labels: ['Male', 'Female'],
+  datasets: [
+    {
+      label: 'Number of People',
+      data: [50, 70], // Replace with your data
+      backgroundColor: ['blue', 'pink'], // Bar colors
+    },
+  ],
+};
+
+const dataChildrenAdults = {
+  labels: ['Children', 'Adults'],
+  datasets: [
+    {
+      label: 'Number of People',
+      data: [30, 90], // Replace with your data
+      backgroundColor: ['green', 'purple'], // Bar colors
+    },
+  ],
+};
+
+// const options = {
+//   indexAxis: 'y', // Set to 'y' for horizontal bar chart
+//   scales: {
+//     x: {
+//       beginAtZero: true,
+//     },
+//   },
+// };
+interface ChartOptions {
+      scales: {
+        x: {
+          beginAtZero: boolean;
+        };
+      };
+    }
+    
+    const options: ChartOptions = {
+      scales: {
+        x: {
+          beginAtZero: true,
+        },
+      },
+    };
 
 const Bio: React.FC = () => {
   const iconSize = "200px";
@@ -13,37 +60,7 @@ const Bio: React.FC = () => {
   const checkboxStyle = isDatabaseActive
     ? 'text-green-600'
     : 'text-black';
-
-  const chartRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const data = {
-      labels: ['Males', 'Females'],
-      datasets: [
-        {
-          data: [40, 60], //sample data
-          backgroundColor: ['green', 'blue', 'red', 'yellow']
-        },
-      ],
-    };
-
-    const chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-
-    const ctx = chartRef.current?.getContext('2d'); //context of the chart
-
-    if (ctx) {
-      new Chart(ctx, {
-        type: 'doughnut',
-        data: data,
-        options: chartOptions
-      });
-    }
-  }, 
-  []
-  );
+    
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -62,6 +79,7 @@ const Bio: React.FC = () => {
     gender: '',
     email: '',
     dateOfBirth: '',
+    role: 'Member'
   });
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -174,6 +192,19 @@ const Bio: React.FC = () => {
           {/* Information Block 2 */}
           <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex items-center justify-between w-1/3 ml-4">
             {/* Add your content for Block 2 here */}
+            {/* <div className="mb-4">
+              <Bar data={dataGender} options={options} />
+            </div>
+            <div className="mb-4">
+              <Bar data={dataAge} options={options} />
+            </div> */}
+
+            {/* <div className="w-1/2">
+              <Bar data={dataMaleFemale} options={options} />
+            </div>
+            <div className="w-1/2">
+              <Bar data={dataChildrenAdults} options={options} />
+            </div> */}
           </div>
 
           {/* Information Block 3 */}
@@ -202,8 +233,14 @@ const Bio: React.FC = () => {
         {isOpen && (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-black bg-opacity-50">
           <div className="bg-white p-4 w-82 shadow-md rounded-md">
-            <h2 className="text-2xl font-bold mb-4">New Member</h2>
-            <form className=' items-center justify-center'>
+          <button
+                className="bg-blue-50 px-4 py-2 rounded-md"
+                onClick={closePopUp}
+              >
+                <Icon icon="ep:back" />
+              </button>
+            
+            <form className=' items-center justify-center mt-6'>
               {/* Your form fields go here */}
               <div className='mb-4 flex'>
                 <div className="w-1/4 pr-2">
@@ -262,7 +299,7 @@ const Bio: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="mb-4">
+              <div className="mb-7">
                 <input
                   type="text"
                   id="email"
@@ -274,7 +311,7 @@ const Bio: React.FC = () => {
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-7">
                 <label htmlFor="dateOfBirth" className="block text-gray-700">Date of Birth</label>
                 <input
                   type="text"
@@ -289,9 +326,8 @@ const Bio: React.FC = () => {
               <label>
                   Department
                 </label>
-              <div className='mb-4 flex'>
-                
-                <div className="w-3/4 pr-2">
+              <div className='mb-7 flex'>
+                <div className="w-2/3 pr-2">
                   <input
                     type="text"
                     id="department"
@@ -303,13 +339,13 @@ const Bio: React.FC = () => {
                     required
                   />
                 </div>
-                <div className="w-1/4 pl-2">
+                <div className="w-1/3 pl-2">
                   <select
                     id="role"
                     name="role"
                     className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
                     onChange={handleInputChange}
-                    value={formData.namePrefix}
+                    value={formData.role}
                   >
                     <option value="Member">Member</option>
                     <option value="Pastor">Pastor</option>
@@ -318,17 +354,60 @@ const Bio: React.FC = () => {
                   </select>
                 </div>
               </div>
+
+              <div className="mb-4 flex">
+                <div className="w-1/3 pr-2">
+                  <label htmlFor="biometrics" className="block text-gray-700">
+                    Scan Biometrics
+                  </label>
+                  <div className='input-icon'>
+                    <input
+                    type="text"
+                    id="biometrics"
+                    name="biometrics"
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    placeholder="Biometrics"
+                    onChange={handleInputChange}
+                    // value={formData.biometrics}
+                    required
+                    />
+                    {/* <Icon icon="ic:round-fingerprint" style={{ position: 'absolute', left: '5px', top: '50%', transform: 'translateY(-50%)', fontSize: '24px' }} /> */}
+                  </div>
+                  
+                    
+                </div>
+                <div className="w-2/3 pl-2">
+                  <label htmlFor="notes" className="block text-gray-700">
+                    Notes
+                  </label>
+                  <textarea
+                    id="notes"
+                    name="notes"
+                    placeholder="Notes"
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    // onChange={handleInputChange}
+                    // value={formData.notes}
+                  ></textarea>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="terms" className="block text-gray-700">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    className="mr-2"
+                    onChange={handleCheckboxChange}
+                    // checked={formData.terms}
+                  />
+                  Visitor
+                </label>
+              </div>
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200"
+                className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200 mt-8"
               >
                 SAVE NEW MEMBER
-              </button>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                onClick={closePopUp}
-              >
-                Close
               </button>
             </form>
           </div>
