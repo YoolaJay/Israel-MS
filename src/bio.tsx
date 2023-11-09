@@ -1,68 +1,55 @@
 import { Icon } from '@iconify/react';
 import React from 'react';
 import {useState, useRef, useEffect} from 'react';
-import {Bar} from 'react-chartjs-2';
+import axios from 'axios';
+import 'chart.js/auto';
+import { Bar } from 'react-chartjs-2';
 
 
 
-const dataMaleFemale = {
-  labels: ['Male', 'Female'],
-  datasets: [
-    {
-      label: 'Number of People',
-      data: [50, 70], // Replace with your data
-      backgroundColor: ['blue', 'pink'], // Bar colors
-    },
-  ],
+type MemberType = {
+  _id: string; // This should match the actual data structure
+  prefix: string;
+  name: string;
+  phone: string;
+  // Add other fields as needed to match your database structure
 };
 
-const dataChildrenAdults = {
-  labels: ['Children', 'Adults'],
-  datasets: [
-    {
-      label: 'Number of People',
-      data: [30, 90], // Replace with your data
-      backgroundColor: ['green', 'purple'], // Bar colors
-    },
-  ],
-};
-
-// const options = {
-//   indexAxis: 'y', // Set to 'y' for horizontal bar chart
-//   scales: {
-//     x: {
-//       beginAtZero: true,
-//     },
-//   },
-// };
-interface ChartOptions {
-      scales: {
-        x: {
-          beginAtZero: boolean;
-        };
-      };
-    }
-    
-    const options: ChartOptions = {
-      scales: {
-        x: {
-          beginAtZero: true,
-        },
-      },
-    };
+interface BioProps {
+  setSearchQuery: (query: string) => void;
+}
 
 const Bio: React.FC = () => {
   const iconSize = "200px";
-  const [isDatabaseActive, setIsDatabaseActive] = useState(false);
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsDatabaseActive(event.target.checked);
-  };
-  const checkboxStyle = isDatabaseActive
-    ? 'text-green-600'
-    : 'text-black';
-    
+  // const [isDatabaseActive, setIsDatabaseActive] = useState(false);
+
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  // const [searchQuery, setSearchQueryState] = useState(''); // New state for search query
+  // const [searchResults, setSearchResults] = useState<MemberType[]>([]);
+  const [selectedUser, setSelectedUser] = useState<MemberType | null>(null);
+  const [nameSuggestions, setNameSuggestions] = useState<MemberType[]>([]);
+  const [inputValue, setInputValue] = useState(''); // State variable to store current input value
+
+  const [genderData, setGenderData] = useState({ males: 0, females: 0 });
+
+
+
+  // // Function to handle the selection of a user from the suggestions
+  // const handleSelectUser = (user: MemberType) => {
+  //   setSelectedUser(user);
+  // };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // setIsDatabaseActive(event.target.checked);
+  };
+  // const checkboxStyle = isDatabaseActive
+  //   ? 'text-green-600'
+  //   : 'text-black';
+    
 
   const openPopUp = () => {
     setIsOpen(true);
@@ -79,17 +66,206 @@ const Bio: React.FC = () => {
     gender: '',
     email: '',
     dateOfBirth: '',
-    role: 'Member'
+    role: 'Member',
+    department: '',
+    biometrics: '',
+    notes: ''
   });
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+
+    setInputValue(value);
+
+    if (name === "name") {
+      setInputValue(value); // Update the input field value
+      if (value.trim() !== "") {
+        // Fetch name suggestions based on the input value
+        fetchNameSuggestions(value);
+      } else {
+        setNameSuggestions([]); // Clear suggestions when the name field is empty
+      }
+    } else {
+      setNameSuggestions([]); // Clear suggestions for other fields
+    }
+  };
+
+  const handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+  
     
 
+  const handleAddMember = async () => {
+    event?.preventDefault();
+    try {
+      // Define the member data you want to send to the server
+      const memberData = {
+        prefix: formData.namePrefix,
+        name: formData.name,
+        phone: formData.phone,
+        gender: formData.gender,
+        email: formData.email,
+        dateOfBirth: formData.dateOfBirth,
+        department: formData.department,
+        role: formData.role,
+        bio: formData.biometrics,
+        notes: formData.notes
+      };
+
+      // Send a POST request to your server's "add members" API
+      const response = await axios.post('http://localhost:3001/api/members', memberData);
+
+      // Handle the response from the server as needed
+      if (response.status === 200) {
+        // Member added successfully, you can show a success message or perform other actions.
+      setIsSuccess(true); // Show success message
+      setIsError(false); // Hide any previous error messages
+      closePopUp();
+      } else {
+        // Handle any errors or display an error message.
+      setIsSuccess(false); // Hide any previous success messages
+      setIsError(true); // Show an error message
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions.
+      console.error('Error creating member:', error);
+      setIsSuccess(false); // Hide any previous success messages
+      setIsError(true); // Show an error message
+    }
+    };
+
+
+// Use useEffect to fetch suggestions when the name field changes
+  useEffect(() => {
+    if (inputValue.trim() !== '') {
+      fetchNameSuggestions(inputValue);
+    } else {
+      setNameSuggestions([]); // Clear suggestions when the name field is empty
+    }
+  }, [inputValue]);
+
+    
+  // Function to fetch name suggestions from the database
+  const fetchNameSuggestions = async (query: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/members/suggestions?query=${query}`);
+      setNameSuggestions(response.data);
+    } catch (error) {
+      console.error('Error fetching name suggestions:', error);
+    }
+  };
+
+
+  // Function to handle the selection of a suggestion and fill the phone input field
+  const handleSelectSuggestion = (user: MemberType) => {
+    setFormData({
+      ...formData,
+      name: `${user.name}`, // Set the selected name
+      phone: user.phone, // Fill the phone input with the corresponding phone number
+    });
+    setInputValue(`${user.name}`)
+    setSelectedUser(user)
+    setNameSuggestions([]); // Clear suggestions
+  };
+
+  const handleEnrollment = async () => {
+    event?.preventDefault();
+    try {
+      // Define the selected user's name (prefix + name) based on the input field value
+      const selectedUserName = inputValue;
+
+      // Fetch the detailed user information from the 'members' collection
+      const responses = await axios.get(`http://localhost:3001/api/members/details?name=${selectedUserName}`);
+      const userDataFromMembers = responses.data[0];
+
+
+      // Define the selected user data to send to the enrollment endpoint
+      const selectedUserData = {
+        prefix: userDataFromMembers.prefix,
+        name: formData.name,
+        phone: formData.phone,
+        gender: userDataFromMembers.gender,
+        email: userDataFromMembers.email,
+        dateOfBirth: userDataFromMembers.dateOfBirth,
+        department: userDataFromMembers.department,
+        role: userDataFromMembers.role,
+        // ...selectedUser
+      };
+      
+  
+      // Send a POST request to the enrollment endpoint
+      const response = await axios.post('http://localhost:3001/api/enroll', selectedUserData);
+  
+      setInputValue('');
+      setNameSuggestions([]);
+
+      // Handle the response from the server
+      if (response.status === 200) {
+        // Enrollment successful, show a success message
+        setIsSuccess(true);
+        setIsError(false);
+        closePopUp();
+
+        setInputValue('');
+        setNameSuggestions([])
+        setSelectedUser(null);
+
+        window.alert('Enrollment successful')
+      } else {
+        // Handle any errors or display an error message.
+        setIsSuccess(false);
+        setIsError(true);
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions.
+      console.error('Error enrolling user:', error);
+      setIsSuccess(false);
+      setIsError(true);
+    }
+  };
+  
+
+  // In your React component (Bio.tsx)
+  useEffect(() => {
+    axios.get('http://localhost:3001/api/enroll/genderDataForDay')
+      .then((response) => {
+        const { males, females } = response.data;
+        setGenderData({ males, females });
+      })
+      .catch((error) => {
+        console.error('Error fetching gender data:', error);
+      });
+  }, []);
+
+  const data = {
+    labels: ['Males', 'Females'],
+    datasets: [
+      {
+        label: 'Gender Distribution',
+        // data: [genderData.males, genderData.females],
+        data: [20, 40],
+        backgroundColor: ['#1d4ed8', '#169144'], // Blue for males, green for females
+      },
+    ],
+  };
+
+  console.log(data)
+  const options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
+  console.log(options)
+
+  
     return (
-      <div>
+      <div className='w-full overflow-x-auto'>
         <div className="rounded-3xl bg-gradient-to-b from-blue-800 to-blue-950 text-white p-10 py-20 flex items-center justify-between ">
           {/* Left side of the navigation */}
 
@@ -116,11 +292,55 @@ const Bio: React.FC = () => {
               <form className=' grid gap-4'>
                 <div className='mb-4 font-bold'>
                   <label className='text-green-400'>Name: </label>
-                  <p id="name" className='text-s'>Mr George</p>
+                     <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        style={{color:'white', background:'#1d4ed8'}}
+                        className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                        onChange={handleInputChange}
+                        value={inputValue}
+                        required
+                      />
+                      {nameSuggestions.length > 0 && (
+                        <div className="suggestions" style={{width: '15%'}}>
+                          {nameSuggestions.map((user) => (
+                            <div
+                              key={user._id}
+                              className="suggestion"
+                              onClick={() => handleSelectSuggestion(user)}
+                            >
+                              {user.prefix} {user.name}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                 </div>
+                
                 <div className='mb-6 font-bold'>
                   <label className='text-green-400'> Tel/ Number: </label>
-                  <p id="phoneNumber" className='text-s'> 0501124987 </p>
+                  {selectedUser && (
+                    <input
+                      type="text"
+                      id="phone"
+                      name="phone"
+                      className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                      value={selectedUser.phone}
+                      style={{color:'white', background:'#1d4ed8'}}
+                      readOnly
+                    />
+                  )}
+
+                    {/* <input
+                      type="text"
+                      id="phone"
+                      name="phone"
+                      className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                      onChange={handleInputChange}
+                      value={formData.phone}
+                      required
+                    /> */}
+
                 </div>
               </form>
             </div>
@@ -129,12 +349,13 @@ const Bio: React.FC = () => {
               <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center' onClick={openPopUp}>
                 Add member
               </button>
-
+{/* 
               <button className='w-full text-blue-800 bg-white px-9 py-2 flex items-center justify-center'>
                 Edit Info
-              </button>
+              </button> */}
 
-              <button className='w-full text-white bg-gradient-to-b from-green-600 to-green-800 px-11 py-2 flex items-center justify-center'>
+              <button className='w-full text-white bg-gradient-to-b from-green-600 to-green-800 px-11 py-2 flex items-center justify-center'
+              onClick={handleEnrollment}>
                 Enroll
               </button>
             </div>
@@ -142,15 +363,18 @@ const Bio: React.FC = () => {
         </div>
 
         <div className="mt-8 flex justify-between">
-          <div className="flex flex-col items-center justify-between">
+          {/* <div className="flex flex-col items-center justify-between"> */}
             {/* Information Block 1 */}
-            <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex flex-col items-center w-80">
-              <div className='flex items-center'>
+            <div className="rounded-3xl bg-gray-200 shadow-lg p-3 flex flex-col items-center w-1/3">
+              <h2 style={{fontWeight: 'bold'}}>Gender Distribution for Today</h2>
+              <br></br>
+              <Bar data={data} options={options}/>
+              {/* <div className='flex items-center'>
                 <button className="border bg-green-500 text-white px-4 py-2 rounded-full h-16 w-16 flex items-center justify-center">
                   <Icon icon="game-icons:power-button" style={{fontSize:'24px'}} />
-                </button>
+                </button> */}
                 
-                <div className='ml-4'>
+                {/* <div className='ml-4'>
                   <div className="text-black text-sm font-bold ml-2">
                     Service Ongoing 9:01 am
                   </div>
@@ -158,16 +382,16 @@ const Bio: React.FC = () => {
                     Expected to end at 1:00 pm
                   </div>
                 </div>
-              </div>
+              </div> */}
                 {/* Progress Bar */} 
-              <div className="w-full bg-gray-300 h-2 mt-4 rounded-lg">
+              {/* <div className="w-full bg-gray-300 h-2 mt-4 rounded-lg">
                 <div className="bg-green-500 h-full rounded-md" style={{ width: '50%' }}></div> {/* Adjust width for progress */}
-              </div>
-            </div>
+              {/* </div>  */}
+            {/* </div> */}
 
             {/* Additional Blocks Below Block 1 */}
-            <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex items-center justify-between w-80 mt-4">
-              <input 
+            {/* <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex items-center justify-between w-80 mt-4"> */}
+              {/* <input 
                 type="checkbox" 
                 id="databaseConnection" 
                 className="ml-1 mr-2"
@@ -178,33 +402,22 @@ const Bio: React.FC = () => {
                 {isDatabaseActive ? 'active' : 'Inactive'}
               </label>
   
-            </div>
+            </div> */}
 
-            <div className="rounded-3xl bg-blue-900 shadow-lg p-4 flex items-center justify-between w-80 mt-4">
+            {/* <div className="rounded-3xl bg-blue-900 shadow-lg p-4 flex items-center justify-between w-80 mt-4"> */}
               {/* Content for Additional Block 2 */}
-              <button className='text-white ml-7'>
+              {/* <button className='text-white ml-7'>
                 View last Service Report
               </button>
               <Icon icon="cil:arrow-right" className='text-white mr-9' />
-            </div>
+            </div> */}
           </div>
 
           {/* Information Block 2 */}
-          <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex items-center justify-between w-1/3 ml-4">
+          <div className="rounded-3xl bg-gray-200 shadow-lg p-4 flex flex-col items-center w-1/3 ml-4">
             {/* Add your content for Block 2 here */}
-            {/* <div className="mb-4">
-              <Bar data={dataGender} options={options} />
-            </div>
-            <div className="mb-4">
-              <Bar data={dataAge} options={options} />
-            </div> */}
-
-            {/* <div className="w-1/2">
-              <Bar data={dataMaleFemale} options={options} />
-            </div>
-            <div className="w-1/2">
-              <Bar data={dataChildrenAdults} options={options} />
-            </div> */}
+            <h2 style={{fontWeight: 'bold'}}>Adult and Children Distribution Today</h2>
+           
           </div>
 
           {/* Information Block 3 */}
@@ -255,6 +468,7 @@ const Bio: React.FC = () => {
                     <option value="Mr">Mr</option>
                     <option value="Mrs">Mrs</option>
                     <option value="Dr">Dr</option>
+                    <option value="Ms">Ms</option>
                   </select>
                 </div>
                 <div className="w-3/4 pl-2">
@@ -286,16 +500,17 @@ const Bio: React.FC = () => {
                     />
                   </div>
                   <div className="w-1/2 pl-2">
-                    <input
-                      type="text"
+                    <select
                       id="gender"
                       name="gender"
-                      placeholder='Gender'
                       className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
                       onChange={handleInputChange}
                       value={formData.gender}
                       required
-                    />
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -314,9 +529,10 @@ const Bio: React.FC = () => {
               <div className="mb-7">
                 <label htmlFor="dateOfBirth" className="block text-gray-700">Date of Birth</label>
                 <input
-                  type="text"
+                  type="date"
                   id="dateOfBirth"
                   name="dateOfBirth"
+                  placeholder='dd/mm/yyyy'
                   className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
                   onChange={handleInputChange}
                   value={formData.dateOfBirth}
@@ -335,7 +551,7 @@ const Bio: React.FC = () => {
                     placeholder='Department'
                     className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
                     onChange={handleInputChange}
-                    value={formData.name}
+                    value={formData.department}
                     required
                   />
                 </div>
@@ -351,6 +567,7 @@ const Bio: React.FC = () => {
                     <option value="Pastor">Pastor</option>
                     <option value="Deacon/Deaconess">Deacon</option>
                     <option value="AP">Assistant Pastor</option>
+                    <option value="Worker">Worker</option>
                   </select>
                 </div>
               </div>
@@ -368,7 +585,7 @@ const Bio: React.FC = () => {
                     className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
                     placeholder="Biometrics"
                     onChange={handleInputChange}
-                    // value={formData.biometrics}
+                    value={formData.biometrics}
                     required
                     />
                     {/* <Icon icon="ic:round-fingerprint" style={{ position: 'absolute', left: '5px', top: '50%', transform: 'translateY(-50%)', fontSize: '24px' }} /> */}
@@ -385,8 +602,8 @@ const Bio: React.FC = () => {
                     name="notes"
                     placeholder="Notes"
                     className="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
-                    // onChange={handleInputChange}
-                    // value={formData.notes}
+                    onChange={handleTextareaChange}
+                    value={formData.notes}
                   ></textarea>
                 </div>
               </div>
@@ -406,10 +623,19 @@ const Bio: React.FC = () => {
               <button
                 type="submit"
                 className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200 mt-8"
+                onClick={handleAddMember}
               >
                 SAVE NEW MEMBER
               </button>
             </form>
+            {isSuccess && (
+            <div className="success-message">Member added successfully.</div>
+          )}
+
+          {isError && (
+            <div className="error-message">Failed to add member.</div>
+          )}
+
           </div>
         </div>
       )}

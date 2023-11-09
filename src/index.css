@@ -5,6 +5,7 @@
 @tailwind utilities;
 @media (max-width: 768px) {
     /* Define styles for screens with a maximum width of 768px */
+   
   }
   
 
@@ -30,3 +31,25 @@ body,
 table td{
     border-bottom: 1px solid gray
 }
+
+/* Add this CSS to your styles or stylesheet */
+.suggestions {
+    position: absolute;
+    width: 30%;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #fff;
+    z-index: 1;
+    color: blue;
+  }
+  
+  .suggestion {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .suggestion:hover {
+    background-color: #f0f0f0;
+  }
+  

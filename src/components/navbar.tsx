@@ -1,12 +1,13 @@
 // import { useState } from "react";
 import { Icon } from '@iconify/react';
 import Logo from "@/assets/logo.png";
-import TopNav from './topnav';
 import {Link, useLocation} from 'react-router-dom';
 
-
+interface NavbarProps{
+  handleLogout: () => void;
+}
 // const Navbar = (props: Props) => {
-const Navbar: React.FC = () => {
+const Navbar: React.FC<NavbarProps> = ({handleLogout}) => {
   const location = useLocation();
   // return <nav>
   return(
@@ -101,7 +102,8 @@ const Navbar: React.FC = () => {
               </li>
 
               <li className="mb-5 flex items-center space-x-1 hover:underline hover:shadow-md
-              rounded-md text-white">
+              rounded-md text-white" 
+              onClick={handleLogout}>
 
                 <Icon icon="humbleicons:logout" style={{fontSize: '20px'}} />
                 <a href="/" className="block px-4 py-2">
@@ -112,7 +114,7 @@ const Navbar: React.FC = () => {
           </div>
           </ul>
       </div>
-      <TopNav/>
+      
     </div>
   // </nav>;
   );

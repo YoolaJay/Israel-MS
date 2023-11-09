@@ -11,13 +11,24 @@ import LoginForm from "./login";
 
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const initialLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const [loggedIn, setLoggedIn] = useState(initialLoggedIn);
+  const [searchQuery, setSearchQuery] = useState('');
   
   const handleLogin = () => {
-    // This is a simplified example; you should implement actual authentication logic here.
-    // For now, we're just setting loggedIn to true.
     setLoggedIn(true);
+    localStorage.setItem('isLoggedIn', 'true');
   };
+
+  const handleLogout = () => {
+    setLoggedIn(false);
+
+    localStorage.removeItem('isLoggedIn');
+  };
+
+  // useEffect(() => {
+
+  // }, []);
 
   return (
     <>
@@ -25,23 +36,23 @@ function App() {
         <div className="app flex h-screen overflow-hidden">
               {/* Navbar */}
               <div className=" ">
-                <Navbar />
+                <Navbar handleLogout={handleLogout} />
               </div>
 
 
               {/* Main Content */}
-              <div className="w-full">
+              <div className="w-full overflow-x-auto">
                 {/* TopNav */}
                 <div className="bg-blue-900">
-                  <TopNav />
+                  <TopNav handleLogout={handleLogout} setSearchQuery={setSearchQuery} />
                 </div>
 
                 {/* Bio */}
-                <div className="flex justify-center items-center ">
-                  <div className="w-11/12">
+                <div className="flex justify-center items-center " style={{overflowX: 'auto'}}>
+                  <div className="md:w-11/12 sm:w-11/12">
                     <Routes>
                     <Route path="/dashboard" element={ loggedIn ? <Bio /> : <Navigate to="/login" />}/>
-                    <Route path="/general" element={loggedIn ? <Report/> : <Navigate to="/login" />}/>
+                    <Route path="/general" element={loggedIn ? <Report searchQuery={searchQuery}/> : <Navigate to="/login" />}/>
                     <Route path="/service" element={loggedIn ? <Sreport/> : <Navigate to="/login"/>}/>
                     <Route path="/events" element={loggedIn ? <Scheduler/> : <Navigate to="/login"/>}/>
                     </Routes>
@@ -55,18 +66,13 @@ function App() {
               <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-gray-100">
                 <LoginForm onLogin={handleLogin} />
               </div>
+
             )}
 
-        {/* <LoginForm/>     */}
-          {/* <switch>
-            <Route path='/login' Component={LoginForm}/>
-            <Route path='/signup' Component={SignUp}/>
-          </switch> */}
-           
       </Router>
    
       </>
-    )
+    );
 }
 
 export default App
