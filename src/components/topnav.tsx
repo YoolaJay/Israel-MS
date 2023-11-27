@@ -1,9 +1,27 @@
 import { Icon } from '@iconify/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const TopNav: React.FC = () => {
+
+interface TopNavProps {
+  handleLogout: () => void;
+  
+  setSearchQuery: (query: string) => void;
+}
+
+
+const TopNav: React.FC<TopNavProps> = ({handleLogout, setSearchQuery}) => {
+  const [isCollectionCreated, setIsCollectionCreated] = useState<boolean>(() => {
+    // Retrieve the value from localStorage on component mount
+    const storedValue = localStorage.getItem('isCollectionCreated');
+    return storedValue ? JSON.parse(storedValue) : false;
+  });
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  // const [isCollectionCreated, setIsCollectionCreated] = useState(false);
+  const [searchInput, setSearchInput] = useState('');  
+
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
@@ -17,6 +35,55 @@ const TopNav: React.FC = () => {
   //   setIsOpen(false);
   // };
 
+  const handleSearch = () => {
+    setSearchQuery(searchInput);
+  };
+  
+  // Handle filtering as the user types
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    setSearchInput(inputValue);
+    setSearchQuery(inputValue); // Optionally, filter as the user types
+  };
+  
+  
+  const handleToggleButtonClick = () => {
+    // if (isCollectionCreated) {
+    //   // Set the system to inactive (button turns red)
+    //   setIsCollectionCreated(false);
+    //   // Update the localStorage to persist the state
+    // } else {
+    //   // Attempt to create a collection and set the system to active (button turns green)
+    //   createCollection();
+    // }
+
+      if (!isCollectionCreated) {
+        createCollection();
+      } else {
+        // The system is currently active (button is green)
+        // Toggle the state to inactive (button turns red)
+        setIsCollectionCreated(false);
+        // Update the localStorage to persist the state
+        localStorage.setItem('isCollectionCreated', JSON.stringify(false));
+      }
+    
+  };
+
+  const createCollection = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/createCollection');
+      if (response.data.created){
+        setIsCollectionCreated(true);
+
+        localStorage.setItem('isCollectionCreated', JSON.stringify(true));
+
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   return (
     <div>
       <div className="rounded-tl-3xl bg-white text-white p-14 flex items-center justify-between">
@@ -26,13 +93,24 @@ const TopNav: React.FC = () => {
             type="text"
             placeholder="Search"
             className=" ml-6 px-40 py-3 border border-gray-400 bg-white text-gray-600 rounded-full resize-x"
+            value={searchInput}
+            // onChange={(e) => setSearchInput(e.target.value)}
+            onChange={handleSearchInputChange}
           />
-          <button className="border border-blue-800 bg-blue-700 text-white px-4 py-3 rounded-full flex items-center justify-center"><Icon icon="ion:search-outline" /></button>
+          <button className="border border-blue-800 bg-blue-700 text-white px-4 py-3 rounded-full flex items-center justify-center"
+          onClick={handleSearch}>
+            <Icon icon="ion:search-outline" />
+          </button>
         </div>
         
         {/* Right side of the navigation */}
         <div className="flex items-center space-x-4 mr-14">
-          <button className="border border-blue-800 bg-green-600 text-white px-4 py-2 rounded-full h-16 w-16 flex items-center justify-center">
+          <button className={`border border-blue-800 text-white px-4 py-2 rounded-full h-16 w-16 flex items-center justify-center
+            ${
+              isCollectionCreated ? 'bg-green-600' : 'bg-red-600'
+            }`}
+            onClick={handleToggleButtonClick}
+          >
             <Icon icon="game-icons:power-button" style={{fontSize:'24px'}} />
           </button>
 
@@ -56,7 +134,8 @@ const TopNav: React.FC = () => {
                   <Icon icon="bx:key" />
                     Change Password
                   </button>
-                  <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center text-xs border-b-2 font-bold'>
+                  <button className='w-full text-blue-800 bg-white px-7 py-2 flex items-center justify-center text-xs border-b-2 font-bold'
+                  onClick={handleLogout}>
                   <Icon icon="solar:logout-2-line-duotone" className='mr-2' />
                      Log Out
                   </button>
