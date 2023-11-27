@@ -299,7 +299,7 @@ const Bio: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="mb-4">
+              <div className="mb-7">
                 <input
                   type="text"
                   id="email"
@@ -311,7 +311,7 @@ const Bio: React.FC = () => {
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-7">
                 <label htmlFor="dateOfBirth" className="block text-gray-700">Date of Birth</label>
                 <input
                   type="text"
@@ -326,8 +326,7 @@ const Bio: React.FC = () => {
               <label>
                   Department
                 </label>
-              <div className='mb-4 flex'>
-                
+              <div className='mb-7 flex'>
                 <div className="w-2/3 pr-2">
                   <input
                     type="text"
